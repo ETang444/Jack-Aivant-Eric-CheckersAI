@@ -1,0 +1,5 @@
+//This is the class that we store all the board's data in.
+//It should contain the 2D array for the board
+//It should contain the makeMove method
+//And it should contain a running count of each side's pieces
+//Add more things here!
