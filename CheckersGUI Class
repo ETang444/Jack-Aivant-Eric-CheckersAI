@@ -1,6 +1,7 @@
 //This class is the GUI representation of the board
 //Allowing the player to see the board
 //And make moves on the board
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -8,7 +9,9 @@ import javax.swing.*;
 public class CheckersGUI extends JFrame implements ActionListener
 {
 	JButton[][] buttons;
-	//CheckersBoard data = new CheckersBoard   (this code will be added later)
+	//CheckersBoard data = new CheckersBoard();
+	int prevClicked; //This will be useful in the ActionListener, when you need to remember what was previously clicked.
+	//prevClicked stores data in the form: first digit = row, second digit = column
 	
 	public CheckersGUI(String title)
 	{
@@ -16,13 +19,12 @@ public class CheckersGUI extends JFrame implements ActionListener
 		setSize(800,800);
 		setLayout(new GridLayout(8,8));
 		setVisible(true);
-		buttons = new JButton[8][8]; //Array of 64 JButtons
-		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		buttons = new JButton[8][8];
 		for(int r=0; r<8; r++)
 		{
 			for(int c=0; c<8; c++)
 			{
-			  //Adds and registers every JButton to the screen
 				buttons[r][c] = new JButton("");
 				add(buttons[r][c]);
 				buttons[r][c].addActionListener(this);
@@ -30,7 +32,7 @@ public class CheckersGUI extends JFrame implements ActionListener
 				buttons[r][c].setVisible(true);
 			}
 		}
-		repaint();
+		drawBoard();
 	}
 	
 	public void drawBoard() //Takes the board info and redraws the board; will run after every move
@@ -40,6 +42,12 @@ public class CheckersGUI extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent evt) //Interprets button presses
 	{
+		int indices = Integer.parseInt(evt.getActionCommand());
+		int row = indices/10;
+		int column = indices%10;
+		//Now row and column are the respective rows and columns
+		//Also note that row and column are counting from the top-right down
+		
 
 	}
 	
@@ -50,4 +58,3 @@ public class CheckersGUI extends JFrame implements ActionListener
 	}
 
 }
-
