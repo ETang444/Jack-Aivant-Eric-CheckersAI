@@ -1,3 +1,53 @@
 //This class is the GUI representation of the board
 //Allowing the player to see the board
 //And make moves on the board
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class CheckersGUI extends JFrame implements ActionListener
+{
+	JButton[][] buttons;
+	//CheckersBoard data = new CheckersBoard   (this code will be added later)
+	
+	public CheckersGUI(String title)
+	{
+		super(title);
+		setSize(800,800);
+		setLayout(new GridLayout(8,8));
+		setVisible(true);
+		buttons = new JButton[8][8]; //Array of 64 JButtons
+		
+		for(int r=0; r<8; r++)
+		{
+			for(int c=0; c<8; c++)
+			{
+			  //Adds and registers every JButton to the screen
+				buttons[r][c] = new JButton("");
+				add(buttons[r][c]);
+				buttons[r][c].addActionListener(this);
+				buttons[r][c].setActionCommand(r+""+c);
+				buttons[r][c].setVisible(true);
+			}
+		}
+		repaint();
+	}
+	
+	public void drawBoard() //Takes the board info and redraws the board; will run after every move
+	{
+		
+	}
+	
+	public void actionPerformed(ActionEvent evt) //Interprets button presses
+	{
+
+	}
+	
+	public static void main(String[] args)
+	{
+		CheckersGUI game = new CheckersGUI("First Game!");
+		game.setVisible(true);
+	}
+
+}
+
