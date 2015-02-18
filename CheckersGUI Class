@@ -46,7 +46,7 @@ public class CheckersGUI extends JFrame implements ActionListener
 		int row = indices/10;
 		int column = indices%10;
 		//Now row and column are the respective rows and columns
-		//Also note that row and column are counting from the top-right down
+		//Also note that row and column are counting from the top-left down
 		
 
 	}
