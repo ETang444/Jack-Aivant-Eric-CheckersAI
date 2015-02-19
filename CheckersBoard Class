@@ -3,3 +3,85 @@
 //It should contain the makeMove method
 //And it should contain a running count of each side's pieces
 //Add more things here!
+
+
+public class CheckerOp {
+
+	// 0 - Blank Space
+	// 1 - Red Piece
+	// 2 - Black Piece
+	// 3 - Red King
+	// 4 - Black King
+	// 5 - rogue Piece
+
+	private int[][] board = new int[8][8];
+	
+	public void setBoard(){
+		board = new int[][] 
+				{{0, 1, 0, 1, 0, 1, 0, 1},   
+		         {1, 0, 1, 0, 1, 0, 1, 0},
+		         {0, 1, 0, 1, 0, 1, 0, 1},
+		         {0, 0, 0, 0, 0, 0, 0, 0},
+		         {0, 0, 0, 0, 0, 0, 0, 0},
+		         {2, 0, 2, 0, 2, 0, 2, 0},
+		         {0, 2, 0, 2, 0, 2, 0, 2},
+		         {2, 0, 2, 0, 2, 0, 2, 0}};
+	}
+	
+	
+	
+	public boolean makeMove(Pair from, Pair to){
+		int moveType; //stores whether it is a move, jump or invalid
+		
+		int pieceType = board[from.getX()][from.getY()]; //finds the type of piece at the from position
+		
+		if(pieceType == 0) return false; //if you are moving from a blank face, return false
+		
+		if(pieceType == 3 || pieceType == 4){ //if it is a king check it's validity
+			moveType = checkValidkingMove(from, to);
+		}
+		
+		moveType = checkValidMove(from, to);
+		
+		if(moveType == 0) return false;
+		
+		//now move the piece accordingly. moveType is 1 if it is a normal move or 2 if it is a jump
+		
+		
+		
+		return true;
+	}
+	//MoveType
+	//0 - Invalid Move
+	//1 - Normal Move
+	//2 - Jump
+	private int checkValidkingMove(Pair from, Pair to) {
+		int toPieceType = board[to.getX()][to.getY()];
+		
+		if(toPieceType != 0) return 0; //check to make sure you're trying to go to a blank space
+		
+		//make sure it is within range.
+		if(Math.abs(to.getX() - from.getX()) == 1 && Math.abs(to.getY() - from.getY()) == 1) return 1;
+		else if(Math.abs(to.getX() - from.getY()) == 2 && Math.abs(to.getY() - from.getY()) == 2) return 2;
+		else return 0;
+
+	}
+
+	private int checkValidMove(Pair from, Pair to) {
+		int toPieceType = board[to.getX()][to.getY()];
+		int fromPieceType = board[from.getX()][from.getY()];
+		
+		if(toPieceType != 0) return 0; //check to make sure you're trying to go to a blank space
+		
+		
+		//make sure it is in a valid spot
+		if(fromPieceType == 1 && Math.abs(to.getX() - from.getX()) == 1 && to.getY() - from.getY() == -1) return 1; 
+		else if(fromPieceType == 2 && Math.abs(to.getX() - from.getX()) == 2 && to.getY() - from.getY() == 2) return 2;
+		else return 0;
+	}
+
+
+	
+	
+	
+}
