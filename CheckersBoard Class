@@ -75,6 +75,8 @@ public class CheckerOp {
 		
 		//make sure it is in a valid spot
 		if(fromPieceType == 1 && Math.abs(to.getX() - from.getX()) == 1 && to.getY() - from.getY() == -1) return 1; 
+                //don't we also have to check the case when it's a non-jumping piece of type 2?
+                //similarly, in this next section, don't we have to check if it's a jumping piece of type 1?
 		else if(fromPieceType == 2 && Math.abs(to.getX() - from.getX()) == 2 && to.getY() - from.getY() == 2){
 			int x = (to.getX() - from.getX())/2;
 			int y = (to.getY() - from.getY())/2;
