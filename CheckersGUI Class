@@ -1,17 +1,17 @@
 //This class is the GUI representation of the board
 //Allowing the player to see the board
 //And make moves on the board
-
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class CheckersGUI extends JFrame implements ActionListener
 {
 	JButton[][] buttons;
-	//CheckersBoard data = new CheckersBoard();
 	int prevClicked; //This will be useful in the ActionListener, when you need to remember what was previously clicked.
 	//prevClicked stores data in the form: first digit = row, second digit = column
+	CheckersOp data;
 	
 	public CheckersGUI(String title)
 	{
@@ -20,6 +20,7 @@ public class CheckersGUI extends JFrame implements ActionListener
 		setLayout(new GridLayout(8,8));
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		buttons = new JButton[8][8];
 		for(int r=0; r<8; r++)
 		{
@@ -30,14 +31,49 @@ public class CheckersGUI extends JFrame implements ActionListener
 				buttons[r][c].addActionListener(this);
 				buttons[r][c].setActionCommand(r+""+c);
 				buttons[r][c].setVisible(true);
+				buttons[r][c].setFont(new Font("Arial", Font.BOLD, 60));
 			}
 		}
+		
+		data = new CheckersOp();
+		data.resetBoard();
 		drawBoard();
 	}
 	
 	public void drawBoard() //Takes the board info and redraws the board; will run after every move
 	{
-		
+		int[][] board = data.getBoard();
+		for(int row=0; row<8; row++)
+		{
+			for(int column=0; column<8; column++)
+			{
+				if(board[row][column]==0)
+				{
+					buttons[row][column].setText("");
+				}
+				if(board[row][column]==1)
+				{
+					buttons[row][column].setForeground(Color.RED);
+					buttons[row][column].setText("O");
+				}
+				if(board[row][column]==2)
+				{
+					buttons[row][column].setForeground(Color.BLACK);
+					buttons[row][column].setText("O");
+				}
+				if(board[row][column]==3)
+				{
+					buttons[row][column].setForeground(Color.RED);
+					buttons[row][column].setText("K");
+				}
+				if(board[row][column]==4)
+				{
+					buttons[row][column].setForeground(Color.BLACK);
+					buttons[row][column].setText("K");
+				}
+			}
+		}
+		repaint();
 	}
 	
 	public void actionPerformed(ActionEvent evt) //Interprets button presses
