@@ -7,7 +7,7 @@
 
 package checkers;
 
-public class CheckerOp {
+public class CheckersOp {
 
 	// 0 - Blank Space
 	// 1 - Red Piece
