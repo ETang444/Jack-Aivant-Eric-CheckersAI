@@ -13,6 +13,7 @@ public class CheckersOp {
 	
 	public void resetBoard(){
 		board = new int[][] 
+				//int[7][1] is seven rows down, one row right
 				{{0, 1, 0, 1, 0, 1, 0, 1},   
 		         {1, 0, 1, 0, 1, 0, 1, 0},
 		         {0, 1, 0, 1, 0, 1, 0, 1},
@@ -27,14 +28,14 @@ public class CheckersOp {
 	int turnCount=0;
 	
 	public int makeMove(int from, int to){
-		int fromX = from / 10;
-		int fromY = from % 10;
-		int toX = to / 10;
-		int toY = to % 10;
+		int fromY = from / 10;
+		int fromX = from % 10;
+		int toY = to / 10;
+		int toX = to % 10;
 		
 		int moveType; //stores whether it is a move, jump or invalid
 		
-		int pieceType = board[fromX][fromY]; //finds the type of piece at the from position
+		int pieceType = board[fromY][fromX]; //finds the type of piece at the from position
 		
 		if(pieceType == 0) return 0; //if you are moving from a blank face, return false
 		
@@ -43,24 +44,25 @@ public class CheckersOp {
 		if(moveType == 0) return 0;
 		
 		//now move the piece accordingly. moveType is 1 if it is a normal move or 2 if it is a jump
-		board[toX][toY] = board[fromX][fromY];
-		board[fromX][fromY] = 0;
+		
+		board[toY][toX] = board[fromY][fromX];
+		board[fromY][fromX] = 0;
 		
 		if(moveType == 2){
 			
-			int x = (toX - fromX)/2;
 			int y = (toY - fromY)/2;
-			int middle = board[fromX + x][fromY + y];
+			int x = (toX - fromX)/2;
+			int middle = board[fromY + y][fromX + x];
 			if(pieceType == 2 || pieceType == 4){
 					if(middle == 1 || middle == 3){
-						board[fromX + x][fromY + y] = 0;
+						board[fromY + y][fromX + x] = 0;
 						rCount--;
 					}else return 0;
 			}
 			
 			if(pieceType == 1 || pieceType == 3){
 				if(middle == 2 || middle == 4){
-					board[fromX + x][fromY + y] = 0;
+					board[fromY + y][fromX + x] = 0;
 					bCount--;
 				}else return 0;
 			}
@@ -68,9 +70,9 @@ public class CheckersOp {
 		}
 		
 		//Check to see if a King was born
-		if(toX == 0 || toX == 7){
-			if(pieceType == 1) board[toX][toY] = 3;
-			if(pieceType == 2) board[toX][toY] = 4;
+		if(toY == 0 || toY == 7){
+			if(pieceType == 1) board[toY][toX] = 3;
+			if(pieceType == 2) board[toY][toX] = 4;
 		}
 		turnCount++;
 		return moveType;
@@ -82,49 +84,48 @@ public class CheckersOp {
 	//2 - Jump
 	
 	private int checkValidMove(int from, int to) {
-		int fromX = from / 10;
-		int fromY = from % 10;
-		int toX = to / 10;
-		int toY = to % 10;
+		int fromY = from / 10;
+		int fromX = from % 10;
+		int toY = to / 10;
+		int toX = to % 10;
 		
-		int fromPieceType = board[fromX][fromY];
-		if(fromPieceType == 3 ||fromPieceType == 4) return checkValidkingMove(from, to);
-		int toPieceType = board[toX][toY];
+		int fromPieceType = board[fromY][fromX];
+		if(fromPieceType == 3 ||fromPieceType == 4) 
+			return checkValidkingMove(from, to);
+		int toPieceType = board[toY][toX];
 		
 		if(toPieceType != 0) return 0; //check to make sure you're trying to go to a blank space
 		
 		
 		//make sure it is in a valid spot
-		if(fromPieceType == 1 && Math.abs(toX - fromX) == 1 && toY - fromY == -1) return 1;
-		if(fromPieceType == 2 && Math.abs(toX - fromX) == 1 && toY - fromY == 1) return 1;
-		if(fromPieceType == 2 && Math.abs(toX - fromX) == 2 && toY - fromY == 2){
-			int x = (toX - fromX)/2;
-			int y = (toY - fromY)/2;
-			if(board[fromX + x][fromY + y] != 0) return 2;
+		if(fromPieceType == 1 && Math.abs(toX - fromX) == 1 && toY - fromY == 1) return 1;
+		if(fromPieceType == 2 && Math.abs(toX - fromX) == 1 && toY - fromY == -1) return 1;
+		if(fromPieceType == 2 && Math.abs(toX - fromX) == 2 && toY - fromY == -2){
+			int x = (fromX - toX)/2;
+			if(board[fromX + x][fromY -1] != 0) return 2;
 			return 0;
 		}
-		if(fromPieceType == 1 && Math.abs(toX - fromX) == 2 && toY - fromY == -2){
+		if(fromPieceType == 1 && Math.abs(toX - fromX) == 2 && toY - fromY == 2){
 			int x = (toX - fromX)/2;
-			int y = (toY - fromY)/2;
-			if(board[fromX + x][fromY + y] != 0) return 2;
+			if(board[fromX + x][fromY + 1] != 0) return 2;
 			return 0;
 		}
 		else return 0;
 	}
 	
 	private int checkValidkingMove(int from, int to) {
-		int fromX = from / 10;
-		int fromY = from % 10;
-		int toX = to / 10;
-		int toY = to % 10;
+		int fromY = from / 10;
+		int fromX = from % 10;
+		int toY = to / 10;
+		int toX = to % 10;
 		
-		int toPieceType = board[toX][toY];
+		int toPieceType = board[toY][toX];
 		
 		if(toPieceType != 0) return 0; //check to make sure you're trying to go to a blank space
 		
 		//make sure it is within range.
-		if(Math.abs(toX - fromX) == 1 && Math.abs(toY - fromY) == 1) return 1;
-		else if(Math.abs(toX - fromY) == 2 && Math.abs(toY - fromY) == 2) return 2;
+		if(Math.abs(toY - fromY) == 1 && Math.abs(toX - fromX) == 1) return 1;
+		else if(Math.abs(toY - fromX) == 2 && Math.abs(toX - fromX) == 2) return 2;
 		else return 0;
 
 	}
@@ -132,7 +133,7 @@ public class CheckersOp {
 	public int checkWinner(){
 		//need a turn counter, mod it for whose turn. Call it turn, 0 is black, 1 red
 		//0 no winner, 1 red winner, 2 black winner
-		//Needd to add into checkValidMove parameters to assure that the inputted
+		//Need to add into checkValidMove parameters to assure that the inputted
 		//square is within the bounds. 
 		if(rCount==0)
 			return 2;
