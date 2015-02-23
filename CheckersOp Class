@@ -1,6 +1,6 @@
-package checkers;
+//package checkers;
 
-public class CheckerOp {
+public class CheckersOp {
 
 	// 0 - Blank Space
 	// 1 - Red Piece
@@ -99,7 +99,6 @@ public class CheckerOp {
 		return moveType;
 	}
 
-
 	private void switchTurn(){
 		if(turn == 0) turn = 1;
 		else turn = 0;
@@ -112,46 +111,46 @@ public class CheckerOp {
 		if(pieceType==0)
 			return false; 
 		if(pieceType==1){
-			if(board[y+1][x-1]==2||board[y+1][x-1]==4)
+			if((board[y+1][x-1]==2||board[y+1][x-1]==4)&&y<6&&x>1)
 				if(board[y+2][x-2]==0)
 					return true;
-			if(board[y+1][x+1]==2||board[y+1][x+1]==4)
+			if((board[y+1][x+1]==2||board[y+1][x+1]==4)&&y<6&&x<6)
 				if(board[y+2][x+2]==0)	
 					return true;
 		}
 		if(pieceType==2){
-			if(board[y-1][x-1]==1||board[y+1][x-1]==3)
+			if((board[y-1][x-1]==1||board[y-1][x-1]==3)&&y>1&&x>1)
 				if(board[y-2][x-2]==0)
 					return true;
-			if(board[y-1][x+1]==1||board[y+1][x+1]==3)
+			if((board[y-1][x+1]==1||board[y-1][x+1]==3)&&y>1&&x<6)
 				if(board[y-2][x+2]==0)	
 					return true;
 		}
 		if(pieceType==3){
-			if(board[y+1][x-1]==2||board[y+1][x-1]==4)
+			if((board[y+1][x-1]==2||board[y+1][x-1]==4)&&y<6&&x>1)
 				if(board[y+2][x-2]==0)
 					return true;
-			if(board[y+1][x+1]==2||board[y+1][x+1]==4)
+			if((board[y+1][x+1]==2||board[y+1][x+1]==4)&&y<6&&x<6)
 				if(board[y+2][x+2]==0)	
 					return true;
-			if(board[y-1][x-1]==2||board[y+1][x-1]==4)
+			if((board[y-1][x-1]==2||board[y+1][x-1]==4)&&y>1&&x>1)
 				if(board[y-2][x-2]==0)
 					return true;
-			if(board[y-1][x+1]==2||board[y+1][x+1]==4)
+			if((board[y-1][x+1]==2||board[y+1][x+1]==4)&&y>1&&x<6)
 				if(board[y-2][x+2]==0)	
 					return true;
 		}
 		if(pieceType==4){
-			if(board[y+1][x-1]==1||board[y+1][x-1]==3)
+			if((board[y+1][x-1]==1||board[y+1][x-1]==3)&&y<6&&x>1)
 				if(board[y+2][x-2]==0)
 					return true;
-			if(board[y+1][x+1]==1||board[y+1][x+1]==3)
+			if((board[y+1][x+1]==1||board[y+1][x+1]==3)&&y<6&&x<6)
 				if(board[y+2][x+2]==0)	
 					return true;
-			if(board[y-1][x-1]==1||board[y+1][x-1]==3)
+			if((board[y-1][x-1]==1||board[y+1][x-1]==3)&&y>1&&x>1)
 				if(board[y-2][x-2]==0)
 					return true;
-			if(board[y-1][x+1]==1||board[y+1][x+1]==3)
+			if((board[y-1][x+1]==1||board[y+1][x+1]==3)&&y>1&&x<6)
 				if(board[y-2][x+2]==0)	
 					return true;
 		}
@@ -178,17 +177,17 @@ public class CheckerOp {
 
 
 		//make sure it is in a valid spot
-		if(fromPieceType == 1 && Math.abs(toY - fromY) == 1 && toX - fromX == 1) return 1;
-		if(fromPieceType == 2 && Math.abs(toY - fromY) == 1 && toX - fromX == -1) return 1;
-		if(fromPieceType == 2 && Math.abs(toY - fromY) == 2 && toX - fromX == -2){
-			int y = (fromY - toY)/2;
-			System.out.println(fromY +  " + " + y + " + " + fromX);
-			if(board[fromY - 1][fromX -1] != 0) return 2;
+		if(fromPieceType == 1 && Math.abs(toX - fromX) == 1 && toY - fromY == 1) return 1;
+		if(fromPieceType == 2 && Math.abs(toX - fromX) == 1 && toY - fromY == -1) return 1;
+		if(fromPieceType == 2 && Math.abs(toX - fromX) == 2 && toY - fromY == -2){
+			int x = Math.abs((fromX - toX)/2);
+			System.out.println(fromX +  " + " + x + " + " + fromY);
+			if(board[fromX + x][fromY -1] != 0) return 2;
 			return 0;
 		}
-		if(fromPieceType == 1 && Math.abs(toY - fromY) == 2 && toX - fromX == 2){
-			int y = (toY - fromY)/2;
-			if(board[fromY + y][fromX + 1] != 0) return 2;
+		if(fromPieceType == 1 && Math.abs(toX - fromX) == 2 && toY - fromY == 2){
+			int x = (toX - fromX)/2;
+			if(board[fromX + x][fromY + 1] != 0) return 2;
 			return 0;
 		}
 		else return 0;
@@ -206,7 +205,7 @@ public class CheckerOp {
 
 		//make sure it is within range.
 		if(Math.abs(toY - fromY) == 1 && Math.abs(toX - fromX) == 1) return 1;
-		else if(Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2) return 2;
+		else if(Math.abs(toY - fromX) == 2 && Math.abs(toX - fromX) == 2) return 2;
 		else return 0;
 
 	}
@@ -224,26 +223,24 @@ public class CheckerOp {
 			for(int j=0;j<8;j++){
 				if(board[i][j]==1){ 
 					//red legal move?
-					int piece=10*i+j;
-					if(checkValidMove(piece,piece+11)==0)
+					if(checkValidMove(i+1,j+1)==0)
 						return 0;
-					if(checkValidMove(piece,piece+9)==0)
+					if(checkValidMove(i+1,j-1)==0)
 						return 0;
-					if(checkValidMove(piece,piece+22)==0)
+					if(checkValidMove(i+2,j+2)==0)
 						return 0;
-					if(checkValidMove(piece,piece+18)==0)
+					if(checkValidMove(i+2,j-2)==0)
 						return 0;
 				}
 				if(board[i][j]==2){
 					//black legal move?
-					int piece=10*i+j;
-					if(checkValidMove(piece,piece-11)==0)
+					if(checkValidMove(i-1,j+1)==0)
 						return 0;
-					if(checkValidMove(piece,piece-9)==0)
+					if(checkValidMove(i-1,j-1)==0)
 						return 0;
-					if(checkValidMove(piece,piece-22)==0)
+					if(checkValidMove(i-2,j+2)==0)
 						return 0;
-					if(checkValidMove(piece,piece-18)==0)
+					if(checkValidMove(i-2,j-2)==0)
 						return 0;
 				}
 				if(board[i][j]==3){ 
