@@ -291,7 +291,7 @@ public class CheckerOp {
 		}
 
 		return 0;
-	}
+	}//dasfsadf
 
 	public int[][] getBoard(){
 		return board;
