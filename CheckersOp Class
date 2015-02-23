@@ -1,4 +1,4 @@
-package checkers;
+//package checkers;
 
 public class CheckersOp {
 
@@ -41,9 +41,6 @@ public class CheckersOp {
 
 		int pieceType = board[fromY][fromX]; //finds the type of piece at the from position
 
-
-
-
 		if(pieceType == 0) return 0; //if you are moving from a blank face, return false
 
 		if(pieceType %2 != turn) return 0;//it is not the person's turn 
@@ -81,9 +78,7 @@ public class CheckersOp {
 					bCount--;
 				}else return 0;
 			}
-
 		}
-
 		//Check to see if a King was born
 		if(toY == 0 || toY == 7){
 			if(pieceType == 1) board[toY][toX] = 3;
@@ -194,16 +189,16 @@ public class CheckersOp {
 		//make sure it is in a valid spot
 		if(fromPieceType == 1 && Math.abs(toX - fromX) == 1 && toY - fromY == 1) return 1;
 		if(fromPieceType == 2 && Math.abs(toX - fromX) == 1 && toY - fromY == -1) return 1;
-		if(fromPieceType == 2 && Math.abs(toX - fromX) == 2 && toY - fromY == -2){
-			int x = (fromX - toX)/2;
-			System.out.println(fromX +  " + " + x + " + " + fromY);
-			if(board[fromY - 1][fromX  + x] != 0) return 2;
-			return 0;
-		}
 		if(fromPieceType == 1 && Math.abs(toX - fromX) == 2 && toY - fromY == 2){
 			int x = (toX - fromX)/2;
-			if(board[fromY + 1][fromX  + x] != 0) return 2;
-			return 0;
+			if(board[fromY + 1][fromX  + x]==2||board[fromY + 1][fromX  + x]==4) return 2;
+		return 0;
+		}
+		if(fromPieceType == 2 && Math.abs(toX - fromX) == 2 && toY - fromY == -2){
+			int x = (toX - fromX)/2;
+			System.out.println(fromX +  " + " + x + " + " + fromY);
+			if(board[fromY - 1][fromX  + x]==1||board[fromY - 1][fromX  + x]==3) return 2;
+		return 0;
 		}
 		else return 0;
 	}
@@ -222,8 +217,8 @@ public class CheckersOp {
 		//make sure it is within range.
 		if(Math.abs(toY - fromY) == 1 && Math.abs(toX - fromX) == 1) return 1;
 		else if(Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2){
-			int x = (fromX - toX)/2;
-			int y = (fromY - toY)/2;
+			int x = (toX - fromX)/2;
+			int y = (toY - fromY)/2;
 			if(fromPieceType == 3 && (board[fromY + y][fromX + x] == 2 || board[fromY + y][fromX + x] == 4)){
 				return 2;
 			}
