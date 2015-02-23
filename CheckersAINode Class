@@ -5,7 +5,6 @@ public class CheckersAINode
 	CheckersOp board; //The current board position
 	ArrayList<CheckersAINode> children; //The next possible boards
 	boolean isLeaf; //Stores if this node is a leaf (changes the value function)
-	boolean followsRoot; //Stores if this node follows the root (if so, we need to remember how we got here)
 	
 	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
 	//We loop through the root's children, until we find the best value, and storrre this
@@ -24,8 +23,9 @@ public class CheckersAINode
 	public void buildTree(int currHeight)
 	{
 		//Now we build the subtree; this is a recursive function
-		//Special case: if we're at the branches, we need to create CheckersAILeafNodes instead
 		//For each of these, we need to run through every possible move and jump chain
+		//Then we add all those possible following boards to children
+	
 		int currTurn = board.turnCount;
 		boolean nextIsLeaf = false;
 		if(currHeight==5) //Later we can change the height of this tree! For now it's 5 moves deep.
@@ -58,6 +58,7 @@ public class CheckersAINode
 	
 	public void addValidSquareMovesForRed(int row, int col, boolean nextIsLeaf)
 	{
+		//These are helper methods: find the possible moves for any given square
 		if(board.getBoard()[row][col]==1)//If we found a normal red piece
 		{
 			//Could optimize this by shuffling the if and else checks
@@ -68,19 +69,20 @@ public class CheckersAINode
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
 			//And if moveDownLeft==0, then the move is invalid and we don't add anything
+			else if(board.checkValidMove(10*row+col,10*(row+2)+col-2)==2) //Jumping down left (this is only possible when moving down-left is impossible)
+			{
+				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
+				//Once we've reached the end of a chain, we stop and add it to children
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
 			{
 				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
-			
-			if(board.checkValidMove(10*row+col,10*(row+2)+col-2)==2) //Jumping down left
-			{
-				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
-				//Once we've reached the end of a chain, we stop and add it to children
-			}
-			if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
+			//Then, we test for jumping down-right (only possible if moving down-right is impossible)
+			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
 			{
 				//And once again, we have to work out jump chains
 			}
@@ -93,39 +95,41 @@ public class CheckersAINode
 				tempBoard.makeMove(10*row+col,10*(row+1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
-			//And if moveDownLeft==0, then the move is invalid and we don't add anything
+			else if(board.checkValidMove(10*row+col,10*(row+2)+col-2)==2) //Jumping down left
+			{
+				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
+				//Once we've reached the end of a chain, we stop and add it to children
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
 			{
 				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
+			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
+			{
+				//And once again, we have to work out jump chains
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
 			{
 				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
-			}	
+			}
+			else if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping up-left
+			{
+				//And once again, we have to work out jump chains
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
 			{
 				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
-			if(board.checkValidMove(10*row+col,10*(row+2)+col-2)==2) //Jumping down left
-			{
-				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
-				//Once we've reached the end of a chain, we stop and add it to children
-			}
-			if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
-			{
-				//And once again, we have to work out jump chains
-			}
-			if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping up-left
-			{
-				//And once again, we have to work out jump chains
-			}
-			if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
+			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
 				//And once again, we have to work out jump chains
 			}
@@ -143,23 +147,24 @@ public class CheckersAINode
 				tempBoard.makeMove(10*row+col,10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
+			else if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping  up-left
+			{
+				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
+				//Once we've reached the end of a chain, we stop and add it to children
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
 			{
 				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
-			
-			if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping  up-left
-			{
-				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
-				//Once we've reached the end of a chain, we stop and add it to children
-			}
-			if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
+			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
 				//And once again, we have to work out jump chains
 			}
 		}
+		
 		else if(board.getBoard()[row][col]==4) //This means we found a red king!
 		{
 			if(board.checkValidMove(10*row+col,10*(row+1)+col-1)==1) //Moving down-left
@@ -168,46 +173,48 @@ public class CheckersAINode
 				tempBoard.makeMove(10*row+col,10*(row+1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
-			//And if moveDownLeft==0, then the move is invalid and we don't add anything
+			else if(board.checkValidMove(10*row+col,10*(row+2)+col-2)==2) //Jumping down left
+			{
+				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
+				//Once we've reached the end of a chain, we stop and add it to children
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
 			{
 				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
+			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
+			{
+				//And once again, we have to work out jump chains
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
 			{
 				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}	
+			else if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping up-left
+			{
+				//And once again, we have to work out jump chains
+			}
+			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
 			{
 				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf));
 			}
-			if(board.checkValidMove(10*row+col,10*(row+2)+col-2)==2) //Jumping down left
-			{
-				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
-				//Once we've reached the end of a chain, we stop and add it to children
-			}
-			if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
-			{
-				//And once again, we have to work out jump chains
-			}
-			if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping up-left
-			{
-				//And once again, we have to work out jump chains
-			}
-			if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
+			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
 				//And once again, we have to work out jump chains
 			}
 		}
 	}
 	
-	public double value()
+	public double value() //We'll edit this for alpha-beta pruning soon!
 	{
 		//Returns the maximum of the children values if it's computer's turn
 		//Or returns the minimum of the children values if it's player turn
@@ -222,9 +229,9 @@ public class CheckersAINode
 			if(children.size()==0)
 			{
 				if(board.turnCount==1)
-					return Integer.MIN_VALUE; //Worst possible outcome: no possible moves for the computer!
+					return Double.MIN_VALUE; //Worst possible outcome: no possible moves for the computer!
 				else
-					return Integer.MAX_VALUE; //This is the best possible outcome! No possible moves for the human!
+					return Double.MAX_VALUE; //This is the best possible outcome! No possible moves for the human!
 
 			}
 			else
