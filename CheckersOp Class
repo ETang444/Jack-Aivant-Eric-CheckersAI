@@ -1,6 +1,6 @@
 package checkers;
 
-public class CheckersOp {
+public class CheckerOp {
 
 	// 0 - Blank Space
 	// 1 - Red Piece
@@ -27,7 +27,7 @@ public class CheckersOp {
 	int bCount=12;
 	int turnCount=0;
 	int turn = 0;
-	int currJumper = -1;
+	int currJumper = -1; //-1 to be default state
 	//0 for black, 1 for red
 
 	public int makeMove(int from, int to){
@@ -46,6 +46,7 @@ public class CheckersOp {
 			if(from != currJumper) return 0;
 			if(checkValidMove(from, to) == 2){
 				switchTurn();
+				currJumper = -1;
 				return 2;
 			}else return 0;
 
