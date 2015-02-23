@@ -1,6 +1,6 @@
 package checkers;
 
-public class CheckerOp {
+public class CheckersOp {
 
 	// 0 - Blank Space
 	// 1 - Red Piece
@@ -92,7 +92,7 @@ public class CheckerOp {
 				if(pieceType == 2) board[toY][toX] = 4;
 			}
 			turnCount++;
-			if(moveType == 2 && hasNextJump(to)) currJumper = to;
+			if(moveType == 2 && hasJump(to)) currJumper = to;
 			else switchTurn();
 
 		}
