@@ -1,6 +1,8 @@
 //This class is the GUI representation of the board
 //Allowing the player to see the board
 //And make moves on the board
+package checkers;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -12,7 +14,8 @@ public class CheckersGUI extends JFrame implements ActionListener
 	private int prevClicked; //This will be useful in the ActionListener, when you need to remember what was previously clicked.
 	//prevClicked stores data in the form: first digit = row, second digit = column
 	private CheckersOp data;
-	private boolean isTwoHumans; 
+	private boolean isTwoHumans;
+	
 	//isTwoHumans decides whether it's a human v. human or human v. computer match. (Could've made two classes, but this was simpler).
 	
 	public CheckersGUI(String title, boolean hasTwoHumans)
@@ -98,7 +101,20 @@ public class CheckersGUI extends JFrame implements ActionListener
 			//, the actionListener will be done
 			//And control will pass back to the player.
 		}
+		this.setTitle(returnTitleString(data.turnCount));
 	}
+	
+	private String returnTitleString(int turnCount){
+		String titleString = "";
+		if(isTwoHumans) titleString += "Human vs. Human";
+		else titleString += "Human vs. Computer";
+		titleString += ", ";
+		if(data.isRedTurn()) titleString += "Red's Turn";
+		else titleString += "Black's Turn";
+		titleString += ", Turn Count: " + turnCount;
+		return titleString;
+	}
+	
 	
 	public static void main(String[] args)
 	{
@@ -107,4 +123,3 @@ public class CheckersGUI extends JFrame implements ActionListener
 	}
 
 }
-
