@@ -1,6 +1,6 @@
 package checkers;
 
-public class CheckersOp {
+public class CheckerOp {
 
 	// 0 - Blank Space
 	// 1 - Red Piece
@@ -178,17 +178,17 @@ public class CheckersOp {
 
 
 		//make sure it is in a valid spot
-		if(fromPieceType == 1 && Math.abs(toX - fromX) == 1 && toY - fromY == 1) return 1;
-		if(fromPieceType == 2 && Math.abs(toX - fromX) == 1 && toY - fromY == -1) return 1;
-		if(fromPieceType == 2 && Math.abs(toX - fromX) == 2 && toY - fromY == -2){
-			int x = Math.abs((fromX - toX)/2);
-			System.out.println(fromX +  " + " + x + " + " + fromY);
-			if(board[fromX + x][fromY -1] != 0) return 2;
+		if(fromPieceType == 1 && Math.abs(toY - fromY) == 1 && toX - fromX == 1) return 1;
+		if(fromPieceType == 2 && Math.abs(toY - fromY) == 1 && toX - fromX == -1) return 1;
+		if(fromPieceType == 2 && Math.abs(toY - fromY) == 2 && toX - fromX == -2){
+			int y = (fromY - toY)/2;
+			System.out.println(fromY +  " + " + y + " + " + fromX);
+			if(board[fromY - 1][fromX -1] != 0) return 2;
 			return 0;
 		}
-		if(fromPieceType == 1 && Math.abs(toX - fromX) == 2 && toY - fromY == 2){
-			int x = (toX - fromX)/2;
-			if(board[fromX + x][fromY + 1] != 0) return 2;
+		if(fromPieceType == 1 && Math.abs(toY - fromY) == 2 && toX - fromX == 2){
+			int y = (toY - fromY)/2;
+			if(board[fromY + y][fromX + 1] != 0) return 2;
 			return 0;
 		}
 		else return 0;
@@ -206,7 +206,7 @@ public class CheckersOp {
 
 		//make sure it is within range.
 		if(Math.abs(toY - fromY) == 1 && Math.abs(toX - fromX) == 1) return 1;
-		else if(Math.abs(toY - fromX) == 2 && Math.abs(toX - fromX) == 2) return 2;
+		else if(Math.abs(toY - fromY) == 2 && Math.abs(toX - fromX) == 2) return 2;
 		else return 0;
 
 	}
