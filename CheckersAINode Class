@@ -2,8 +2,8 @@ import java.util.*;
 
 public class CheckersAINode 
 {
-	CheckersOp board; //The current board position
-	ArrayList<CheckersAINode> children; //The next possible boards
+	private CheckersOp board; //The current board position
+	private ArrayList<CheckersAINode> children; //The next possible boards
 	boolean isLeaf; //Stores if this node is a leaf (changes the value function)
 	
 	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
@@ -18,6 +18,16 @@ public class CheckersAINode
 		board = inputBoard;
 		children = new ArrayList<CheckersAINode>();
 		isLeaf = inputIsLeaf;
+	}
+	
+	public CheckersOp getBoard()
+	{
+		return board;
+	}
+	
+	public ArrayList<CheckersAINode> getChildren()
+	{
+		return children;
 	}
 	
 	public void buildTree(int currHeight)
@@ -215,6 +225,7 @@ public class CheckersAINode
 	}
 	
 	public double value() //We'll edit this for alpha-beta pruning soon!
+	//When we use alpha-beta pruning, we'll probably just throw out all the current code and make it afresh
 	{
 		//Returns the maximum of the children values if it's computer's turn
 		//Or returns the minimum of the children values if it's player turn
@@ -235,7 +246,7 @@ public class CheckersAINode
 
 			}
 			else
-			{
+			{ //Note that the computer is player 1, red!
 				if(board.turnCount==1) //It's the computer's turn, return the max possible next position
 				{
 					double best = children.get(1).value();
