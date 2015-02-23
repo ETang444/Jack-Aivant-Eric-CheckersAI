@@ -1,4 +1,4 @@
-//package checkers;
+package checkers;
 
 public class CheckersOp {
 
@@ -41,61 +41,59 @@ public class CheckersOp {
 
 		int pieceType = board[fromY][fromX]; //finds the type of piece at the from position
 
+
+
+
+		if(pieceType == 0) return 0; //if you are moving from a blank face, return false
+
+		if(pieceType %2 != turn) return 0;//it is not the person's turn 
+
+		moveType = checkValidMove(from, to);
+
+		if(moveType == 0) return 0;
+
+		//now move the piece accordingly. moveType is 1 if it is a normal move or 2 if it is a jump
+
 		if(currJumper != -1){
-			
 			if(from != currJumper) return 0;
-			if(checkValidMove(from, to) == 2){
-				switchTurn();
-				currJumper = -1;
-				return 2;
-			}else return 0;
+			if(moveType != 2) return 0;
+			
+		}
+		board[toY][toX] = board[fromY][fromX];
+		board[fromY][fromX] = 0;
 
-		}else{
+		if(moveType == 2){
 
-			if(pieceType == 0) return 0; //if you are moving from a blank face, return false
-
-			if(pieceType %2 != turn) return 0;//it is not the person's turn 
-
-			moveType = checkValidMove(from, to);
-
-			if(moveType == 0) return 0;
-
-			//now move the piece accordingly. moveType is 1 if it is a normal move or 2 if it is a jump
-
-			board[toY][toX] = board[fromY][fromX];
-			board[fromY][fromX] = 0;
-
-			if(moveType == 2){
-
-				int y = (toY - fromY)/2;
-				int x = (toX - fromX)/2;
-				int middle = board[fromY + y][fromX + x];
-				if(pieceType == 2 || pieceType == 4){
-					if(middle == 1 || middle == 3){
-						board[fromY + y][fromX + x] = 0;
-						rCount--;
-					}else return 0;
-				}
-
-				if(pieceType == 1 || pieceType == 3){
-					if(middle == 2 || middle == 4){
-						board[fromY + y][fromX + x] = 0;
-						bCount--;
-					}else return 0;
-				}
-
+			int y = (toY - fromY)/2;
+			int x = (toX - fromX)/2;
+			int middle = board[fromY + y][fromX + x];
+			if(pieceType == 2 || pieceType == 4){
+				if(middle == 1 || middle == 3){
+					board[fromY + y][fromX + x] = 0;
+					rCount--;
+				}else return 0;
 			}
 
-			//Check to see if a King was born
-			if(toY == 0 || toY == 7){
-				if(pieceType == 1) board[toY][toX] = 3;
-				if(pieceType == 2) board[toY][toX] = 4;
+			if(pieceType == 1 || pieceType == 3){
+				if(middle == 2 || middle == 4){
+					board[fromY + y][fromX + x] = 0;
+					bCount--;
+				}else return 0;
 			}
-			turnCount++;
-			if(moveType == 2 && hasJump(to)) currJumper = to;
-			else switchTurn();
 
 		}
+
+		//Check to see if a King was born
+		if(toY == 0 || toY == 7){
+			if(pieceType == 1) board[toY][toX] = 3;
+			if(pieceType == 2) board[toY][toX] = 4;
+		}
+		turnCount++;
+		if(currJumper != -1) currJumper = -1;
+		if(moveType == 2 && hasJump(to)) currJumper = to;
+		else switchTurn();
+
+
 		return moveType;
 	}
 
@@ -103,7 +101,7 @@ public class CheckersOp {
 		if(turn == 0) turn = 1;
 		else turn = 0;
 	}
-	
+
 	private boolean hasJump(int piece){
 		int y=piece/10;
 		int x=piece%10;
@@ -111,10 +109,10 @@ public class CheckersOp {
 		if(pieceType==0)
 			return false; 
 		if(checkValidMove(piece, piece+22)!=0||
-			checkValidMove(piece, piece+18)!=0||
-			checkValidMove(piece, piece-22)!=0||
-			checkValidMove(piece, piece-18)!=0)
-				return true;
+				checkValidMove(piece, piece+18)!=0||
+				checkValidMove(piece, piece-22)!=0||
+				checkValidMove(piece, piece-18)!=0)
+			return true;
 		return false;
 	}
 	/*
@@ -164,8 +162,8 @@ public class CheckersOp {
 		}
 		return false;
 	}	
-		*/
-	
+	 */
+
 	//MoveType
 	//0 - Invalid Move
 	//1 - Normal Move
