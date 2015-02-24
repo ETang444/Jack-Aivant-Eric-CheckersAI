@@ -1,0 +1,16 @@
+
+public class AIRootNode extends CheckersAINode
+{
+	//Why create a new class for the root?
+	//Because the root needs to store information about all its children's values
+	//It should have an ArrayList; when building its tree, it stores every new value that's better than the old (implementing Alpha-Beta pruning)
+	//Then, in the findBestMove() method of the AITree class, we can scroll through this array to find the index of the best move
+	//Then scroll through the process of adding moves, and tick the counter up by one every time a move is legal
+	//And when counter reaches the index, that move is the correct move/chain!
+
+	public AIRootNode(CheckersOp inputBoard)
+	{
+		super(inputBoard,false);
+	}
+	
+}
