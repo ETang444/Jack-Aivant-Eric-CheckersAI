@@ -1,0 +1,34 @@
+import java.util.*;
+
+public class CheckersAITree 
+{
+	private CheckersAINode root;
+	
+	public CheckersAITree(CheckersOp inputBoard)
+	{
+		root = new CheckersAINode(inputBoard, false);
+	}
+	
+	public void buildTree()
+	{
+		root.buildTree(0);
+	}
+	
+	public ArrayList<Integer> findBestMove() //Returns the sequence of best moves
+	{
+		ArrayList<Integer> moves = new ArrayList<Integer>();
+		double bestValue = root.value();
+		CheckersOp currBoard = root.getBoard();
+		ArrayList<CheckersAINode> kids = root.getChildren();
+		
+		//Here, we loop through until ours matches findRootValue(), and then return that chain
+		int counter = 0;
+		
+		
+		//Thus, this will also make jump chains
+		//Returns in the form {fromYfromX,toYtoX,fromYfromX,toYtoX . . .}
+		
+		
+		return moves;
+	}
+}
