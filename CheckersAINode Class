@@ -277,7 +277,7 @@ public class CheckersAINode
 			for(int i=0; i<theChain.length-1;i++)
 			{
 				tempBoard.makeMove(Integer.parseInt(theChain[i]), Integer.parseInt(theChain[i+1]));
-				children.add(new CheckersAINode(tempBoard, isNextLeaf));
+				children.add(new CheckersAINode(tempBoard, isNextLeaf, oneChainz));
 			}
 		}
 	}
