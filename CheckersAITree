@@ -14,21 +14,8 @@ public class CheckersAITree
 		root.buildTree(0);
 	}
 	
-	public ArrayList<Integer> findBestMove() //Returns the sequence of best moves
+	public ArrayList<Integer> findBestMove() //Returns the sequence of best moves from root
 	{
-		ArrayList<Integer> moves = new ArrayList<Integer>();
-		double bestValue = root.value();
-		CheckersOp currBoard = root.getBoard();
-		ArrayList<CheckersAINode> kids = root.getChildren();
 		
-		//Here, we loop through until ours matches findRootValue(), and then return that chain
-		int counter = 0;
-		
-		
-		//Thus, this will also make jump chains
-		//Returns in the form {fromYfromX,toYtoX,fromYfromX,toYtoX . . .}
-		
-		
-		return moves;
 	}
 }
