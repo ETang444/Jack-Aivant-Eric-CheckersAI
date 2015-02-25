@@ -69,6 +69,7 @@ public class CheckersAINode
 	
 	public void addValidSquareMovesForRed(int row, int col, boolean nextIsLeaf)
 	{
+		int index = 10*row+col;
 		//These are helper methods: find the possible moves for any given square
 		if(board.getBoard()[row][col]==1)//If we found a normal red piece
 		{
@@ -84,8 +85,8 @@ public class CheckersAINode
 			{
 				//Do we need to make a TREE of all possible jumps?
 				//Then we find all leaf nodes, and those are all the possible jump chains!
-				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
-				//Once we've reached the end of a chain, we stop and add it to children
+				//Working out jump chains (using the JumpTree):
+				addJumperChildren(index,2,-2,nextIsLeaf);
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
@@ -223,6 +224,22 @@ public class CheckersAINode
 			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
 				//And once again, we have to work out jump chains
+			}
+		}
+	}
+	
+	private void addJumperChildren(int startIndex, int changeInY, int changeInX, boolean isNextLeaf)
+	{
+		JumpTree treeOfHops = new JumpTree(board,startIndex+10*changeInY + changeInX,startIndex + "," + (startIndex+10*changeInY + changeInX));
+		ArrayList<String> hops = treeOfHops.getAllJumpChains();
+		for(String oneChainz: hops)
+		{
+			CheckersOp tempBoard = board;
+			String[] theChain = oneChainz.split(",");
+			for(int i=0; i<theChain.length-1;i++)
+			{
+				tempBoard.makeMove(Integer.parseInt(theChain[i]), Integer.parseInt(theChain[i+1]));
+				children.add(new CheckersAINode(tempBoard, isNextLeaf));
 			}
 		}
 	}
