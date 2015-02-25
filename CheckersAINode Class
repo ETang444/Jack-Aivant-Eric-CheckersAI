@@ -7,6 +7,7 @@ public class CheckersAINode
 	boolean isLeaf; //Stores if this node is a leaf (changes the value function)
 	private double value;
 	private String moves;
+	private String bestNextMove;
 	
 	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
 	//We loop through the root's children, until we find the best value, and store this
@@ -21,6 +22,7 @@ public class CheckersAINode
 		children = new ArrayList<CheckersAINode>();
 		isLeaf = inputIsLeaf;
 		moves=moveSequence;
+		bestNextMove = null;
 	}
 	
 	public CheckersOp getBoard()
@@ -291,7 +293,7 @@ public class CheckersAINode
 		if(isLeaf)
 		{
 			//Then we need to return the evaluation of any given position
-			return 3.0; //Arbitrary, just needed to make it compile
+			return board.evaluateBoard(); //Arbitrary, just needed to make it compile
 		}
 		else
 		{
@@ -308,12 +310,14 @@ public class CheckersAINode
 				if(board.turnCount==1) //It's the computer's turn, return the max possible next position
 				{
 					double best = children.get(1).value();
+					bestNextMove = children.get(1).moves;
 					for(CheckersAINode possibleNext: children)
 					{
 						double nextStep = possibleNext.value();
 						if(nextStep>best)
 						{
 							best = nextStep;
+							bestNextMove = possibleNext.moves;
 						}
 					}
 					return best;
@@ -321,6 +325,7 @@ public class CheckersAINode
 				else //otherwise, it's opponent's turn; return the worst (their best move)
 				{
 					double theirBest = children.get(1).value();
+					bestNextMove = children.get(1).moves;
 					for(CheckersAINode possibleNext: children)
 					{
 						double nextStep = possibleNext.value();
@@ -329,6 +334,7 @@ public class CheckersAINode
 							theirBest = nextStep;
 						}
 					}
+					bestNextMove = children.get(1).moves;
 					return theirBest;
 				}
 			}
