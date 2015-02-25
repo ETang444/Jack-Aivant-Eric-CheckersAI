@@ -98,7 +98,8 @@ public class CheckersAINode
 			//Then, we test for jumping down-right (only possible if moving down-right is impossible)
 			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,2,2,nextIsLeaf);
+
 			}
 		}
 		else if(board.getBoard()[row][col]==3) //This means we found a red king!
@@ -113,6 +114,8 @@ public class CheckersAINode
 			{
 				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
 				//Once we've reached the end of a chain, we stop and add it to children
+				addJumperChildren(index,2,-2,nextIsLeaf);
+
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
@@ -123,7 +126,8 @@ public class CheckersAINode
 			}
 			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,2,-2,nextIsLeaf);
+
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
@@ -134,7 +138,7 @@ public class CheckersAINode
 			}
 			else if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping up-left
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,-2,-2,nextIsLeaf);
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
@@ -145,13 +149,14 @@ public class CheckersAINode
 			}
 			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,-2,+2,nextIsLeaf);
 			}
 		}
 	}
 	
 	public void addValidSquareMovesForBlack(int row, int col, boolean nextIsLeaf)
 	{
+		int index = 10*row + col;
 		if(board.getBoard()[row][col]==2)//If we found a normal black piece
 		{
 			//Could optimize this by shuffling the if and else checks
@@ -165,6 +170,8 @@ public class CheckersAINode
 			{
 				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
 				//Once we've reached the end of a chain, we stop and add it to children
+				addJumperChildren(index,-2,-2,nextIsLeaf);
+
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
@@ -175,7 +182,7 @@ public class CheckersAINode
 			}
 			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,-2,2,nextIsLeaf);
 			}
 		}
 		
@@ -191,6 +198,8 @@ public class CheckersAINode
 			{
 				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
 				//Once we've reached the end of a chain, we stop and add it to children
+				addJumperChildren(index,2,-2,nextIsLeaf);
+
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
@@ -201,7 +210,7 @@ public class CheckersAINode
 			}
 			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,2,2,nextIsLeaf);
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
@@ -212,7 +221,7 @@ public class CheckersAINode
 			}	
 			else if(board.checkValidMove(10*row+col,10*(row-2)+col-2)==2) //Jumping up-left
 			{
-				//And once again, we have to work out jump chains
+				addJumperChildren(index,-2,-2,nextIsLeaf);
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
@@ -224,12 +233,16 @@ public class CheckersAINode
 			else if(board.checkValidMove(10*row+col,10*(row-2)+col+2)==2) //Jumping up-right
 			{
 				//And once again, we have to work out jump chains
+				addJumperChildren(index,-2,2,nextIsLeaf);
+
 			}
 		}
 	}
 	
 	private void addJumperChildren(int startIndex, int changeInY, int changeInX, boolean isNextLeaf)
 	{
+		//Note: only create a jump chain when one jump has already been executed (the changeInY and changeInX)
+		//This avoids creating way too  many unnecessary jump trees
 		JumpTree treeOfHops = new JumpTree(board,startIndex+10*changeInY + changeInX,startIndex + "," + (startIndex+10*changeInY + changeInX));
 		ArrayList<String> hops = treeOfHops.getAllJumpChains();
 		for(String oneChainz: hops)
