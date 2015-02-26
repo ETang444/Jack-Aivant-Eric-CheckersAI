@@ -1,11 +1,9 @@
 //This class is the GUI representation of the board
 //Allowing the player to see the board
 //And make moves on the board
-package checkers;
-
 import java.awt.*;
 import java.awt.event.*;
-
+import java.util.*;
 import javax.swing.*;
 
 public class CheckersGUI extends JFrame implements ActionListener
@@ -14,13 +12,12 @@ public class CheckersGUI extends JFrame implements ActionListener
 	private int prevClicked; //This will be useful in the ActionListener, when you need to remember what was previously clicked.
 	//prevClicked stores data in the form: first digit = row, second digit = column
 	private CheckersOp data;
-	private boolean isTwoHumans;
-	
-	//isTwoHumans decides whether it's a human v. human or human v. computer match. (Could've made two classes, but this was simpler).
+	private boolean isTwoHumans; //This decides whether it's a human v. human or human v. computer match. (Could've made two classes, but this was simpler).
 	
 	public CheckersGUI(String title, boolean hasTwoHumans)
 	{
 		super(title);
+
 		setSize(800,800);
 		setLayout(new GridLayout(8,8));
 		setVisible(true);
@@ -41,10 +38,12 @@ public class CheckersGUI extends JFrame implements ActionListener
 			}
 		}
 		
+		
 		data = new CheckersOp();
 		data.resetBoard();
 		isTwoHumans = hasTwoHumans;
 		drawBoard();
+
 	}
 	
 	public void drawBoard() //Takes the board info and redraws the board; will run after every move
@@ -89,57 +88,50 @@ public class CheckersGUI extends JFrame implements ActionListener
 		int didWork = data.makeMove(prevClicked, currClick);
 		if(didWork!=0)
 		{
+			System.out.println("Human just moved, I think.");
 			drawBoard();
+			if(data.isRedTurn()&&isTwoHumans==false)
+			{
+					//Here we feed our wonderful AI the board, and ask it to make as many moves as needed
+					//Then we'll have a while loop in here, too: while(data.currJumper!=null), keep playing
+					//And finally at the end of the jump chain or at the end of the single move, the turns will have flipped within data
+					//, the actionListener will be done
+					//And control will pass back to the player.
+										
+					
+					//long startMillis = System.currentTimeMillis(); -- can use this later to program in a time delay
+					CheckersAITree thinker = new CheckersAITree(data); //QUESTION: does this change the board? Do I need to clone stuff?
+					thinker.buildTree();
+					String bestMoves = thinker.findBestMove(); //We ask our AI Tree what the best move is
+					//We are apparently getting a null pointer exception on this next line!
+					String[] arrMoves = bestMoves.split(","); //Divides up the string of moves by comma
+					System.out.println("The best move is: " + bestMoves);
+					for(int i=0; i<arrMoves.length-1; i++)
+					{
+						System.out.println("AI moving once.");
+						data.makeMove(Integer.parseInt(arrMoves[i]),Integer.parseInt(arrMoves[i+1]));
+					}
+					drawBoard();
+			}
+			//Possible issue: if the computer has no moves, what happens? Probably nothing wrong.
+			
+			int winner = data.checkWinner();
+			if(winner==1)
+			{
+				System.out.println("The Computer has Triumphed. RIP.");
+			}
+			else if(winner==2)
+			{
+				System.out.println("You beat the computer! Congratulations!");
+			}	
 		}
 		prevClicked = currClick; //You'll notice that the old player's last square will get stored as the next player's prevClicked, but
 		//but this is okay, because there will never be a legal move whose prevClick is a square with the opponent's piece
-		int winner = data.checkWinner();
-		if(winner==1)
-		{
-			System.out.println("The Computer has Triumphed. RIP.");
-		}
-		else if(winner==2)
-		{
-			System.out.println("You beat the computer! Congratulations!");
-		}
-		if(isTwoHumans==false)
-		{
-			//Here we feed our wonderful AI the board, and ask it to make as many moves as needed
-			//Then we'll have a while loop in here, too: while(data.currJumper!=null), keep playing
-			//And finally at the end of the jump chain or at the end of the single move, the turns will have flipped within data
-			//, the actionListener will be done
-			//And control will pass back to the player.
-			
-			//Right now, this AITree will not function, but this code will work later
-			
-			/*
-			long startMillis = System.currentTimeMillis();
-			CheckersAITree thinker = new CheckersAITree(data); //QUESTION: does this change the board? Do I need to clone stuff?
-			thinker.buildTree();
-			ArrayList<Integer> bestMoves = thinker.findBestMove();
-			for(int i=0; i<bestMoves.size(); i=i+2) //For the chain of moves we're given, execute.
-			{
-				data.makeMove(bestMoves.get(i),bestMoves.get(i+1));
-			}
-			long endMillis = System.currentTimeMillis();
-			if(endMillis-startMillis<3000) //This is a delay of 3 seconds for every computer move
-			{
-				//We could change this time delay later!
-				try
-				{ 
-					Thread.sleep(3000-(endMillis-startMillis));
-				}
-				catch(InterruptedException e) //Just some necessary catch statements for the time-delay
-				{
-					e.printStackTrace();
-				}
-			}
-			*/
-		}
 		this.setTitle(returnTitleString(data.turnCount));
 	}
 	
-	private String returnTitleString(int turnCount){
+	private String returnTitleString(int turnCount)
+	{
 		String titleString = "";
 		if(isTwoHumans) titleString += "Human vs. Human";
 		else titleString += "Human vs. Computer";
@@ -158,3 +150,4 @@ public class CheckersGUI extends JFrame implements ActionListener
 	}
 
 }
+
