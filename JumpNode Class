@@ -3,7 +3,6 @@
 //Each fork in the tree corresponds to a new path the piece could take.
 //And thus, by finding all the leaf nodes, we find all possible jump chains.
 //Every chain is represented by a String: "Y1X1,Y2X2,Y3X3 . . ."
-//Then we split this string later
 
 public class JumpNode 
 {
@@ -20,7 +19,7 @@ public class JumpNode
 	
 	public JumpNode(CheckersOp inputBoard, int inputPiece, String inputHowWeGotHere)
 	{
-		currBoard = inputBoard;
+		currBoard = new CheckersOp(inputBoard);
 		currPiece = inputPiece;
 		upLeft = null;
 		upRight = null;
