@@ -12,7 +12,8 @@ public class JumpTree
 	{
 		//So the tree takes three inputs:
 		//The current board, the number of the piece we're trying to move, and the first jump (String HowWeGotHere))
-		root = new JumpNode(inputBoard, inputPiece, inputHowWeGotHere);
+		CheckersOp tempBoard = new CheckersOp(inputBoard); //We need to clone inputBoard here
+		root = new JumpNode(tempBoard, inputPiece, inputHowWeGotHere);
 		allJumpChains = new ArrayList<String>();
 	}
 	
@@ -29,25 +30,25 @@ public class JumpTree
 		//Then assigns the root's child to a new JumpNode using that board, the new piece, and the appended series of moves
 		if(rt.currBoard.checkValidMove(currPiece, currPiece+22)==2)
 		{
-			CheckersOp tempBoard = rt.currBoard; //Will my changes to tempBoard affect currBoard?
+			CheckersOp tempBoard = new CheckersOp(rt.currBoard); //Will my changes to tempBoard affect currBoard?
 			tempBoard.makeMove(currPiece, currPiece+22);
 			rt.downRight = new JumpNode(tempBoard, currPiece+22, howWeGotHere+","+(currPiece+22));
 		}
 		if(rt.currBoard.checkValidMove(currPiece, currPiece+18)==2)
 		{
-			CheckersOp tempBoard = rt.currBoard;
+			CheckersOp tempBoard = new CheckersOp(rt.currBoard);
 			tempBoard.makeMove(currPiece, currPiece+18);
 			rt.downLeft = new JumpNode(tempBoard, currPiece+18, howWeGotHere+","+(currPiece+18));
 		}
 		if(rt.currBoard.checkValidMove(currPiece, currPiece-18)==2)
 		{
-			CheckersOp tempBoard = rt.currBoard; 
+			CheckersOp tempBoard = new CheckersOp(rt.currBoard); 
 			tempBoard.makeMove(currPiece, currPiece-18);
 			rt.upRight = new JumpNode(tempBoard, currPiece-18, howWeGotHere+","+(currPiece-18));
 		}
 		if(rt.currBoard.checkValidMove(currPiece, currPiece-22)==2)
 		{
-			CheckersOp tempBoard = rt.currBoard;
+			CheckersOp tempBoard = new CheckersOp(rt.currBoard);
 			tempBoard.makeMove(currPiece, currPiece-22);
 			rt.upLeft = new JumpNode(tempBoard, currPiece-22, howWeGotHere+","+(currPiece-22));
 		}
@@ -56,12 +57,13 @@ public class JumpTree
 		fillInKids(rt.upRight);
 		fillInKids(rt.upLeft);
 		//Should we add commas between move chains?
+		//Yep
 	}
 	
 	
 	private void getAllJumpChainsHelp(JumpNode rt)
 	{
-		if(rt!=null)
+		if(rt==null)
 			return;
 		if(rt.downRight==null&&rt.downLeft==null&&rt.upRight==null&&rt.upLeft==null)
 			allJumpChains.add(rt.howWeGotHere);
