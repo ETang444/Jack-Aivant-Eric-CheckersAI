@@ -7,7 +7,7 @@ public class CheckersAINode
 	boolean isLeaf; //Stores if this node is a leaf (changes the value function)
 	private double value;
 	private String moves;
-	private String bestNextMove;
+	public String bestNextMove;
 	
 	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
 	//We loop through the root's children, until we find the best value, and store this
@@ -293,16 +293,16 @@ public class CheckersAINode
 		if(isLeaf)
 		{
 			//Then we need to return the evaluation of any given position
-			return board.evaluateBoard(); //Arbitrary, just needed to make it compile
+			return board.evaluateBoard();
 		}
 		else
 		{
 			if(children.size()==0)
 			{
 				if(board.turnCount==1)
-					return Double.MIN_VALUE; //Worst possible outcome: no possible moves for the computer!
+					return Integer.MIN_VALUE; //Worst possible outcome: no possible moves for the computer!
 				else
-					return Double.MAX_VALUE; //This is the best possible outcome! No possible moves for the human!
+					return Integer.MAX_VALUE; //This is the best possible outcome! No possible moves for the human!
 
 			}
 			else
