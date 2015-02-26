@@ -42,15 +42,13 @@ public class CheckersOp {
 	
 	public CheckersOp(CheckersOp template) //This one clones a given CheckersOp template
 	{
-		int[][] tempBoard = template.board; //Does this still point to template's board?
-		//Do we need this next part to clone the board?
-		if(template.getBoard()==null)
-			System.out.println("The board is null.");
-		for(int r=0; r<8; r++)
+		int[][] inputBoard = template.getBoard();
+		board = new int[8][8];
+		for(int row=0; row<8; row++)
 		{
-			for(int c=0; c<8; c++)
+			for(int col=0; col<8; col++)
 			{
-				board[r][c] = tempBoard[r][c];
+				board[row][col] = inputBoard[row][col];
 			}
 		}
 		rCount = template.rCount;
