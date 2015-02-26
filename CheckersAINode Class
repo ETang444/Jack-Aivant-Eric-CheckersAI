@@ -9,16 +9,10 @@ public class CheckersAINode
 	private String moves;
 	public String bestNextMove;
 	
-	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
-	//We loop through the root's children, until we find the best value, and store this
-	//Then we loop through the root's possible moves, counting up every time, until we reach the stored value
-	//(This will thus be the best position to go to next, since they're added in the same order they're counted in)
-	//Then we take that given move, and return it (or the given jump chain)
-	//^^All these above ideas will be implemented in the tree class?
 	
 	public CheckersAINode(CheckersOp inputBoard, boolean inputIsLeaf, String moveSequence)
 	{
-		board = inputBoard;
+		board = new CheckersOp(inputBoard);
 		children = new ArrayList<CheckersAINode>();
 		isLeaf = inputIsLeaf;
 		moves=moveSequence;
@@ -50,12 +44,16 @@ public class CheckersAINode
 		}
 		
 		int currTurn = board.turn;
+		System.out.println(currTurn);
 		boolean nextIsLeaf = false;
-		if(currHeight==5) //Later we can change the height of this tree! For now it's 5 moves deep.
+		if(currHeight==3) //Later we can change the height of this tree! For now it's 5 moves deep.
 			nextIsLeaf = true;
 		System.out.println("Current Height: " + currHeight);
+		
+		//To change! 0 is black and 1 is red
 		if(currTurn==1) //If it's the red pieces
 		{
+			System.out.println("We are trying to add red piece moves");
 			for(int row=0; row<8; row++)
 			{
 				for(int col=0; col<8; col++)
@@ -64,8 +62,9 @@ public class CheckersAINode
 				}
 			}
 		}
-		else if(currTurn==2)
+		else if(currTurn==0)
 		{
+			System.out.println("We are trying to add black pieces");
 			for(int row=0; row<8; row++)
 			{
 				for(int col=0; col<8; col++)
@@ -83,9 +82,11 @@ public class CheckersAINode
 	public void addValidSquareMovesForRed(int row, int col, boolean nextIsLeaf)
 	{
 		int index = 10*row+col;
+		
 		//These are helper methods: find the possible moves for any given square
 		if(board.getBoard()[row][col]==1)//If we found a normal red piece
 		{
+			System.out.println("We have detected a red piece while building the tree");
 			//Later, we may optimize the searching order by putting the jumps first
 			if(board.checkValidMove(10*row+col,10*(row+1)+col-1)==1) //Moving down-left
 			{
@@ -267,7 +268,8 @@ public class CheckersAINode
 	{
 		//Note: only create a jump chain when one jump has already been executed (the changeInY and changeInX)
 		//This avoids creating way too  many unnecessary jump trees
-		JumpTree treeOfHops = new JumpTree(board,startIndex+10*changeInY + changeInX,startIndex + "," + (startIndex+10*changeInY + changeInX));
+		System.out.println("Now we're making a JumpTree");
+		JumpTree treeOfHops = new JumpTree(board,startIndex+10*changeInY + changeInX,startIndex + "," + (startIndex+10*changeInY + changeInX)); //Could definitely have a jumper problem
 		ArrayList<String> hops = treeOfHops.getAllJumpChains();
 		for(String oneChainz: hops)
 		{
@@ -296,7 +298,7 @@ public class CheckersAINode
 		{
 			if(children.size()==0)
 			{
-				if(board.turnCount==1)
+				if(board.turn==1)
 					return Integer.MIN_VALUE; //Worst possible outcome: no possible moves for the computer!
 				else
 					return Integer.MAX_VALUE; //This is the best possible outcome! No possible moves for the human!
@@ -304,7 +306,7 @@ public class CheckersAINode
 			}
 			else
 			{ //Note that the computer is player 1, red!
-				if(board.turnCount==1) //It's the computer's turn, return the max possible next position
+				if(board.turn==1) //It's the computer's turn, return the max possible next position
 				{
 					double best = children.get(1).value();
 					bestNextMove = children.get(1).moves;
