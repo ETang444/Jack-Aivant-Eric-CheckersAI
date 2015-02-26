@@ -49,9 +49,9 @@ public class CheckersAINode
 			return; //If it's the leaf, stop building
 		}
 		
-		int currTurn = board.turnCount;
+		int currTurn = board.turn;
 		boolean nextIsLeaf = false;
-		if(currHeight==0) //Later we can change the height of this tree! For now it's 5 moves deep.
+		if(currHeight==5) //Later we can change the height of this tree! For now it's 5 moves deep.
 			nextIsLeaf = true;
 		System.out.println("Current Height: " + currHeight);
 		if(currTurn==1) //If it's the red pieces
