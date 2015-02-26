@@ -190,6 +190,9 @@ public class CheckersOp {
 		int toY = to / 10;
 		int toX = to % 10;
 
+		if(fromY>7||fromY<0||toX>7||toX<0||fromX>7||fromX<0||toY>7||toY<0)
+			return 0;
+		
 		int fromPieceType = board[fromY][fromX];
 		int toPieceType = board[toY][toX];
 
