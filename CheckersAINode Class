@@ -3,7 +3,7 @@ import java.util.*;
 public class CheckersAINode 
 {
 	private CheckersOp board; //The current board position
-	private ArrayList<CheckersAINode> children; //The next possible boards
+	public ArrayList<CheckersAINode> children; //The next possible boards
 	boolean isLeaf; //Stores if this node is a leaf (changes the value function)
 	private double value;
 	private String moves;
@@ -38,24 +38,22 @@ public class CheckersAINode
 	{
 		return moves;
 	}
-	public String findBestMove()
-	{
-		//Given that you know the value of all nodes, find best move
-		//return what initial move was used to get there
-		
-		return "yummy ducks";
-	}
 	
 	public void buildTree(int currHeight)
 	{
 		//Now we build the subtree; this is a recursive function
 		//For each of these, we need to run through every possible move and jump chain
 		//Then we add all those possible following boards to children
-	
+		if(isLeaf)
+		{
+			return; //If it's the leaf, stop building
+		}
+		
 		int currTurn = board.turnCount;
 		boolean nextIsLeaf = false;
-		if(currHeight==5) //Later we can change the height of this tree! For now it's 5 moves deep.
+		if(currHeight==0) //Later we can change the height of this tree! For now it's 5 moves deep.
 			nextIsLeaf = true;
+		System.out.println("Current Height: " + currHeight);
 		if(currTurn==1) //If it's the red pieces
 		{
 			for(int row=0; row<8; row++)
@@ -91,7 +89,7 @@ public class CheckersAINode
 			//Later, we may optimize the searching order by putting the jumps first
 			if(board.checkValidMove(10*row+col,10*(row+1)+col-1)==1) //Moving down-left
 			{
-				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col-1);
 				String lastMove=(10*row+col) + "," + (10*(row+1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -107,7 +105,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
 			{
-				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //QUESTION: will my changes to tempBoard affect board? -- Now they won't!
 				tempBoard.makeMove(10*row+col,10*(row+1)+col+1);
 				String lastMove=(10*row+col) + "," + (10*(row+1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -123,7 +121,7 @@ public class CheckersAINode
 		{
 			if(board.checkValidMove(10*row+col,10*(row+1)+col-1)==1) //Moving down-left
 			{
-				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col-1);
 				String lastMove=(10*row+col) + "," + (10*(row+1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -138,7 +136,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
 			{
-				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col+1);
 				String lastMove=(10*row+col) + "," + (10*(row+1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -151,7 +149,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
 			{
-				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col-1);
 				String lastMove=(10*row+col) + "," + (10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -163,7 +161,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
 			{
-				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col+1);
 				String lastMove=(10*row+col) + "," + (10*(row-1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -183,7 +181,7 @@ public class CheckersAINode
 			//Could optimize this by shuffling the if and else checks
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
 			{
-				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col-1);
 				String lastMove=(10*row+col) + "," + (10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -193,12 +191,11 @@ public class CheckersAINode
 				//Now we have to work out jump chains: just use a while loop to keep checking for chains (and/or DFS))
 				//Once we've reached the end of a chain, we stop and add it to children
 				addJumperChildren(index,-2,-2,nextIsLeaf);
-
 			}
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
 			{
-				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col+1);
 				String lastMove=(10*row+col) + "," + (10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -213,7 +210,7 @@ public class CheckersAINode
 		{
 			if(board.checkValidMove(10*row+col,10*(row+1)+col-1)==1) //Moving down-left
 			{
-				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col-1);
 				String lastMove=(10*row+col) + "," + (10*(row+1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -228,7 +225,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row+1)+col+1)==1) //moving down-right
 			{
-				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row+1)+col+1);
 				String lastMove=(10*row+col) + "," + (10*(row+1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -240,7 +237,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col-1)==1) //Moving up-left
 			{
-				CheckersOp tempBoard = board; //Does this work? Will my changes in tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //Does this work? Will my changes in tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col-1);
 				String lastMove=(10*row+col) + "," + (10*(row-1)+col-1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -252,7 +249,7 @@ public class CheckersAINode
 			
 			if(board.checkValidMove(10*row+col,10*(row-1)+col+1)==1) //moving up-right
 			{
-				CheckersOp tempBoard = board; //QUESTION: will my changes to tempBoard affect board?
+				CheckersOp tempBoard = new CheckersOp(board); //QUESTION: will my changes to tempBoard affect board?
 				tempBoard.makeMove(10*row+col,10*(row-1)+col+1);
 				String lastMove=(10*row+col) + "," + (10*(row-1)+col+1);
 				children.add(new CheckersAINode(tempBoard, nextIsLeaf, lastMove));
@@ -274,13 +271,13 @@ public class CheckersAINode
 		ArrayList<String> hops = treeOfHops.getAllJumpChains();
 		for(String oneChainz: hops)
 		{
-			CheckersOp tempBoard = board;
+			CheckersOp tempBoard = new CheckersOp(board);
 			String[] theChain = oneChainz.split(",");
 			for(int i=0; i<theChain.length-1;i++)
 			{
 				tempBoard.makeMove(Integer.parseInt(theChain[i]), Integer.parseInt(theChain[i+1]));
-				children.add(new CheckersAINode(tempBoard, isNextLeaf, oneChainz));
 			}
+			children.add(new CheckersAINode(tempBoard, isNextLeaf, oneChainz));
 		}
 	}
 	
