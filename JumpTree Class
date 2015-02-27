@@ -19,6 +19,7 @@ public class JumpTree
 	
 	private void fillInKids(JumpNode rt)
 	{
+		System.out.println("We are now running fillInKids");
 		//In theory, we could optimize this to only check backwards and forwards jumps for the correct colors
 		if(rt==null)
 			return;
@@ -30,34 +31,37 @@ public class JumpTree
 		//Then assigns the root's child to a new JumpNode using that board, the new piece, and the appended series of moves
 		if(rt.currBoard.checkValidMove(currPiece, currPiece+22)==2)
 		{
-			CheckersOp tempBoard = new CheckersOp(rt.currBoard); //Will my changes to tempBoard affect currBoard?
+			System.out.println("The jump tree has detected that a piece can jump down-right.");
+			CheckersOp tempBoard = new CheckersOp(rt.currBoard);
 			tempBoard.makeMove(currPiece, currPiece+22);
 			rt.downRight = new JumpNode(tempBoard, currPiece+22, howWeGotHere+","+(currPiece+22));
+			fillInKids(rt.downRight);
 		}
 		if(rt.currBoard.checkValidMove(currPiece, currPiece+18)==2)
 		{
 			CheckersOp tempBoard = new CheckersOp(rt.currBoard);
 			tempBoard.makeMove(currPiece, currPiece+18);
 			rt.downLeft = new JumpNode(tempBoard, currPiece+18, howWeGotHere+","+(currPiece+18));
+			fillInKids(rt.downLeft);
 		}
 		if(rt.currBoard.checkValidMove(currPiece, currPiece-18)==2)
 		{
 			CheckersOp tempBoard = new CheckersOp(rt.currBoard); 
 			tempBoard.makeMove(currPiece, currPiece-18);
 			rt.upRight = new JumpNode(tempBoard, currPiece-18, howWeGotHere+","+(currPiece-18));
+			fillInKids(rt.upRight);
+
 		}
 		if(rt.currBoard.checkValidMove(currPiece, currPiece-22)==2)
 		{
 			CheckersOp tempBoard = new CheckersOp(rt.currBoard);
 			tempBoard.makeMove(currPiece, currPiece-22);
 			rt.upLeft = new JumpNode(tempBoard, currPiece-22, howWeGotHere+","+(currPiece-22));
+			fillInKids(rt.upLeft);
 		}
-		fillInKids(rt.downRight);
-		fillInKids(rt.downLeft);
-		fillInKids(rt.upRight);
-		fillInKids(rt.upLeft);
-		//Should we add commas between move chains?
-		//Yep
+		if(howWeGotHere.length()>5)
+			System.out.println("Here is a node with a double jump chain. We built it.");
+		//Should we add commas between move chains? Yep.
 	}
 	
 	
@@ -66,7 +70,10 @@ public class JumpTree
 		if(rt==null)
 			return;
 		if(rt.downRight==null&&rt.downLeft==null&&rt.upRight==null&&rt.upLeft==null)
+		{
 			allJumpChains.add(rt.howWeGotHere);
+			System.out.println("We are adding to the jump tree's allJumpChains: " + rt.howWeGotHere);
+		}
 		else
 		{
 			getAllJumpChainsHelp(rt.downRight);
