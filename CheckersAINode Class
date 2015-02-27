@@ -9,13 +9,6 @@ public class CheckersAINode
 	private String moves;
 	public String bestNextMove;
 	
-	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
-	//We loop through the root's children, until we find the best value, and store this
-	//Then we loop through the root's possible moves, counting up every time, until we reach the stored value
-	//(This will thus be the best position to go to next, since they're added in the same order they're counted in)
-	//Then we take that given move, and return it (or the given jump chain)
-	//^^All these above ideas will be implemented in the tree class?
-	
 	public CheckersAINode(CheckersOp inputBoard, boolean inputIsLeaf, String moveSequence)
 	{
 		board = new CheckersOp(inputBoard);
@@ -51,12 +44,18 @@ public class CheckersAINode
 		
 		int currTurn = board.turn;
 		System.out.println(currTurn);
-		boolean nextIsLeaf = false;
-		if(currHeight==3) //Later we can change the height of this tree! For now it's 5 moves deep.
-			nextIsLeaf = true;
-		System.out.println("Current Height: " + currHeight);
+		boolean nextIsLeaf = false;if(board.rCount+board.bCount<8)
+		{
+			if(currHeight==4)
+				nextIsLeaf = true;
+		}
+		else
+		{
+			if(currHeight==3) //Later we can change the height of this tree! For now it's 5 moves deep.
+				nextIsLeaf = true;
+		}
 		
-		//To change! 0 is black and 1 is red
+
 		if(currTurn==1) //If it's the red pieces
 		{
 			System.out.println("We are trying to add red piece moves");
