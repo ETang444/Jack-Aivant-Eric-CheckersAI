@@ -9,6 +9,12 @@ public class CheckersAINode
 	private String moves;
 	public String bestNextMove;
 	
+	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
+	//We loop through the root's children, until we find the best value, and store this
+	//Then we loop through the root's possible moves, counting up every time, until we reach the stored value
+	//(This will thus be the best position to go to next, since they're added in the same order they're counted in)
+	//Then we take that given move, and return it (or the given jump chain)
+	//^^All these above ideas will be implemented in the tree class?
 	
 	public CheckersAINode(CheckersOp inputBoard, boolean inputIsLeaf, String moveSequence)
 	{
@@ -115,7 +121,6 @@ public class CheckersAINode
 			else if(board.checkValidMove(10*row+col,10*(row+2)+col+2)==2) //Jumping down-right
 			{
 				addJumperChildren(index,2,2,nextIsLeaf);
-
 			}
 		}
 		else if(board.getBoard()[row][col]==3) //This means we found a red king!
@@ -268,10 +273,12 @@ public class CheckersAINode
 	{
 		//Note: only create a jump chain when one jump has already been executed (the changeInY and changeInX)
 		//This avoids creating way too  many unnecessary jump trees
-
+		//So the parameters are the start, the first jump's changeInY, the first jump's changeInX, and nextIsLeaf
+		//This creates a new board with that first jump already made.
+		System.out.println("Now we're making a JumpTree");
 		CheckersOp inputBoard = new CheckersOp(board);
 		inputBoard.makeMove(startIndex, startIndex + 10*changeInY + changeInX);
-		JumpTree treeOfHops = new JumpTree(board,startIndex+10*changeInY + changeInX,startIndex + "," + (startIndex+10*changeInY + changeInX));
+		JumpTree treeOfHops = new JumpTree(inputBoard,startIndex+10*changeInY + changeInX,startIndex + "," + (startIndex+10*changeInY + changeInX)); //Could definitely have a jumper problem
 		ArrayList<String> hops = treeOfHops.getAllJumpChains();
 		for(String oneChainz: hops)
 		{
@@ -308,8 +315,6 @@ public class CheckersAINode
 			}
 			else
 			{ //Note that the computer is player 1, red!
-				else
-			{ //Note that the computer is player 1, red!
 				if(board.turn==1) //It's the computer's turn, return the max possible next position
 				{
 					double best = children.get(0).value();
@@ -340,7 +345,6 @@ public class CheckersAINode
 					}
 					return theirBest;
 				}
-			}
 			}
 		}
 	}
