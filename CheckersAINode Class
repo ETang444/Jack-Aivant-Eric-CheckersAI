@@ -9,6 +9,13 @@ public class CheckersAINode
 	private String moves;
 	public String bestNextMove;
 	
+	//IDEA: instead of keeping track of whether it follows the root, and howWeGotHere
+	//We loop through the root's children, until we find the best value, and store this
+	//Then we loop through the root's possible moves, counting up every time, until we reach the stored value
+	//(This will thus be the best position to go to next, since they're added in the same order they're counted in)
+	//Then we take that given move, and return it (or the given jump chain)
+	//^^All these above ideas will be implemented in the tree class?
+	
 	public CheckersAINode(CheckersOp inputBoard, boolean inputIsLeaf, String moveSequence)
 	{
 		board = new CheckersOp(inputBoard);
@@ -37,6 +44,7 @@ public class CheckersAINode
 		//Now we build the subtree; this is a recursive function
 		//For each of these, we need to run through every possible move and jump chain
 		//Then we add all those possible following boards to children
+
 		if(isLeaf)
 		{
 			return; //If it's the leaf, stop building
@@ -44,21 +52,23 @@ public class CheckersAINode
 		
 		int currTurn = board.turn;
 		System.out.println(currTurn);
-		boolean nextIsLeaf = false;if(board.rCount+board.bCount<8)
+		boolean nextIsLeaf = false;
+		//Here's the code that changes the height of the tree! If a given node has less than 8 pieces,
+		//The computer looks 6 moves deep instead of 5.
+		if(board.rCount+board.bCount<8)
 		{
-			if(currHeight==4)
+			if(currHeight==5)
 				nextIsLeaf = true;
 		}
 		else
 		{
-			if(currHeight==3) //Later we can change the height of this tree! For now it's 5 moves deep.
+			if(currHeight==4) //Later we can change the height of this tree! For now it's 5 moves deep.
 				nextIsLeaf = true;
 		}
 		
-
+		//To change! 0 is black and 1 is red
 		if(currTurn==1) //If it's the red pieces
 		{
-			System.out.println("We are trying to add red piece moves");
 			for(int row=0; row<8; row++)
 			{
 				for(int col=0; col<8; col++)
@@ -69,7 +79,6 @@ public class CheckersAINode
 		}
 		else if(currTurn==0)
 		{
-			System.out.println("We are trying to add black pieces");
 			for(int row=0; row<8; row++)
 			{
 				for(int col=0; col<8; col++)
@@ -91,7 +100,6 @@ public class CheckersAINode
 		//These are helper methods: find the possible moves for any given square
 		if(board.getBoard()[row][col]==1)//If we found a normal red piece
 		{
-			System.out.println("We have detected a red piece while building the tree");
 			//Later, we may optimize the searching order by putting the jumps first
 			if(board.checkValidMove(10*row+col,10*(row+1)+col-1)==1) //Moving down-left
 			{
