@@ -19,7 +19,6 @@ public class JumpTree
 	
 	private void fillInKids(JumpNode rt)
 	{
-		System.out.println("We are now running fillInKids");
 		//In theory, we could optimize this to only check backwards and forwards jumps for the correct colors
 		if(rt==null)
 			return;
@@ -31,7 +30,6 @@ public class JumpTree
 		//Then assigns the root's child to a new JumpNode using that board, the new piece, and the appended series of moves
 		if(rt.currBoard.checkValidMove(currPiece, currPiece+22)==2)
 		{
-			System.out.println("The jump tree has detected that a piece can jump down-right.");
 			CheckersOp tempBoard = new CheckersOp(rt.currBoard);
 			tempBoard.makeMove(currPiece, currPiece+22);
 			rt.downRight = new JumpNode(tempBoard, currPiece+22, howWeGotHere+","+(currPiece+22));
@@ -59,8 +57,6 @@ public class JumpTree
 			rt.upLeft = new JumpNode(tempBoard, currPiece-22, howWeGotHere+","+(currPiece-22));
 			fillInKids(rt.upLeft);
 		}
-		if(howWeGotHere.length()>5)
-			System.out.println("Here is a node with a double jump chain. We built it.");
 		//Should we add commas between move chains? Yep.
 	}
 	
@@ -72,7 +68,6 @@ public class JumpTree
 		if(rt.downRight==null&&rt.downLeft==null&&rt.upRight==null&&rt.upLeft==null)
 		{
 			allJumpChains.add(rt.howWeGotHere);
-			System.out.println("We are adding to the jump tree's allJumpChains: " + rt.howWeGotHere);
 		}
 		else
 		{
