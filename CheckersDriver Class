@@ -1,6 +1,4 @@
-//This is the starting screen, where you choose a 1-player or 2-player game
-//It then creates the game for you
-//And the opening window disposes of itself
+//This is the starting screen, where you choose 1-player or two-player game
 import java.awt.*;
 import java.awt.event.*;
 
@@ -32,12 +30,12 @@ public class CheckersDriver extends JFrame implements ActionListener
 	{
 		if(evt.getActionCommand().equals("One Player Game"))
 		{
-			CheckersGUI game = new CheckersGUI("Human vs. Computer", false);
+			CheckersGUIPruning game = new CheckersGUIPruning("Human vs. Computer", false);
 			game.setVisible(true);
 		}
 		else if(evt.getActionCommand().equals("Two Player Game"))
 		{
-			CheckersGUI game = new CheckersGUI("Human vs. Human", true);
+			CheckersGUIPruning game = new CheckersGUIPruning("Human vs. Human", true);
 			game.setVisible(true);
 		}
 		this.setVisible(false);
