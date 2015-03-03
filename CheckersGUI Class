@@ -4,17 +4,19 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 
-public class CheckersGUI extends JFrame implements ActionListener
+public class CheckersGUIPruning extends JFrame implements ActionListener
 {
 	private JButton[][] buttons;
 	private int prevClicked; //This will be useful in the ActionListener, when you need to remember what was previously clicked.
 	//prevClicked stores data in the form: first digit = row, second digit = column
 	private CheckersOp data;
 	private boolean isTwoHumans; //This decides whether it's a human v. human or human v. computer match. (Could've made two classes, but this was simpler).
+	private boolean gameOver;
 	
-	public CheckersGUI(String title, boolean hasTwoHumans)
+	public CheckersGUIPruning(String title, boolean hasTwoHumans)
 	{
 		super(title);
 
@@ -23,6 +25,7 @@ public class CheckersGUI extends JFrame implements ActionListener
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		prevClicked = 0;
+		gameOver = false;
 		
 		buttons = new JButton[8][8];
 		for(int r=0; r<8; r++)
@@ -33,11 +36,13 @@ public class CheckersGUI extends JFrame implements ActionListener
 				add(buttons[r][c]);
 				buttons[r][c].addActionListener(this);
 				buttons[r][c].setActionCommand(r+""+c);
+				buttons[r][c].setOpaque(true);
 				buttons[r][c].setVisible(true);
 				buttons[r][c].setFont(new Font("Arial", Font.BOLD, 60));
+				buttons[r][c].setBackground(Color.BLACK); //This is just fo' style
+					
 			}
 		}
-		
 		
 		data = new CheckersOp();
 		data.resetBoard();
@@ -84,12 +89,24 @@ public class CheckersGUI extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent evt) //Interprets button presses
 	{
+		if(gameOver) //This locks up the screen.
+			return;
+		//Note: the winner check still needs some refining in here
 		int currClick = Integer.parseInt(evt.getActionCommand());
 		int didWork = data.makeMove(prevClicked, currClick);
 		if(didWork!=0)
 		{
 			System.out.println("Human just moved, I think.");
 			drawBoard();
+			int winner = data.checkWinner();
+
+			if(winner==2)
+			{
+				System.out.println("You beat the computer! Congratulations!");
+				gameOver = true;
+				return;
+			}	
+			
 			if(data.isRedTurn()&&isTwoHumans==false)
 			{
 					//Here we feed our wonderful AI the board, and ask it to make as many moves as needed
@@ -99,31 +116,29 @@ public class CheckersGUI extends JFrame implements ActionListener
 					//And control will pass back to the player.
 										
 					
-					//long startMillis = System.currentTimeMillis(); -- can use this later to program in a time delay
-					CheckersAITree thinker = new CheckersAITree(data); //QUESTION: does this change the board? Do I need to clone stuff?
-					thinker.buildTree();
+					long startMillis = System.currentTimeMillis();
+					CheckersAITree thinker = new CheckersAITree(data); //CheckersAITree will clone it for us
 					String bestMoves = thinker.findBestMove(); //We ask our AI Tree what the best move is
 					//We are apparently getting a null pointer exception on this next line!
 					String[] arrMoves = bestMoves.split(","); //Divides up the string of moves by comma
-					System.out.println("The best move is: " + bestMoves);
+					System.out.println("The AI moved: " + bestMoves);
 					for(int i=0; i<arrMoves.length-1; i++)
 					{
-						System.out.println("AI moving once.");
 						data.makeMove(Integer.parseInt(arrMoves[i]),Integer.parseInt(arrMoves[i+1]));
 					}
 					drawBoard();
+					long endMillis = System.currentTimeMillis();
+					System.out.println("The AI took " + (endMillis-startMillis) + " milliseconds to find this move.");
+					winner = data.checkWinner();
+					
 			}
 			//Possible issue: if the computer has no moves, what happens? Probably nothing wrong.
 			
-			int winner = data.checkWinner();
 			if(winner==1)
 			{
 				System.out.println("The Computer has Triumphed. RIP.");
+				gameOver = true;
 			}
-			else if(winner==2)
-			{
-				System.out.println("You beat the computer! Congratulations!");
-			}	
 		}
 		prevClicked = currClick; //You'll notice that the old player's last square will get stored as the next player's prevClicked, but
 		//but this is okay, because there will never be a legal move whose prevClick is a square with the opponent's piece
@@ -145,9 +160,8 @@ public class CheckersGUI extends JFrame implements ActionListener
 	
 	public static void main(String[] args)
 	{
-		CheckersGUI game = new CheckersGUI("First Game!", false);
+		CheckersGUIPruning game = new CheckersGUIPruning("First Game!", false);
 		game.setVisible(true);
 	}
 
 }
-
